@@ -57,6 +57,8 @@ public sealed partial class DiscoverPage : Page
 
     private async void OnScanClick(object sender, RoutedEventArgs e)
     {
+        // 组播端口来自设置 (不同版本极域端口不同, 0=默认 4988)
+        Discoverer.MulticastPort = SettingsStore.Load().MulticastPort;
         await Discoverer.StartAsync(GetSelectedMode(), 15);
     }
 

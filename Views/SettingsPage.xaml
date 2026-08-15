@@ -19,6 +19,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Spacing="8">
@@ -188,8 +189,40 @@
             </StackPanel>
         </Border>
 
-        <!-- 设置说明 -->
+        <!-- 端口设置 -->
         <Border Grid.Row="6" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="8" Padding="16">
+            <StackPanel Spacing="12">
+                <TextBlock Text="端口设置" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock Text="不同版本极域的端口可能不同 (如组播公告 4988/4705), 留 0 使用默认值"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                <Grid ColumnSpacing="16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <NumberBox Grid.Column="0" x:Name="MulticastPortBox" Header="组播公告端口" Minimum="0" Maximum="65535"
+                               SpinButtonPlacementMode="Compact" ValueChanged="OnPortChanged"/>
+                    <NumberBox Grid.Column="1" x:Name="ControlPortBox" Header="控制端口" Minimum="0" Maximum="65535"
+                               SpinButtonPlacementMode="Compact" ValueChanged="OnPortChanged"/>
+                    <NumberBox Grid.Column="2" x:Name="SessionPortBox" Header="会话通道端口" Minimum="0" Maximum="65535"
+                               SpinButtonPlacementMode="Compact" ValueChanged="OnPortChanged"/>
+                    <Button Grid.Column="3" VerticalAlignment="Bottom" Click="OnResetPortsClick">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE777;" FontSize="14"/>
+                            <TextBlock Text="恢复默认"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- 设置说明 -->
+        <Border Grid.Row="7" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                 CornerRadius="8" Padding="16">
             <StackPanel Spacing="8">
                 <TextBlock Text="说明" Style="{StaticResource SubtitleTextBlockStyle}"/>
@@ -198,7 +231,7 @@
             </StackPanel>
         </Border>
 
-        <TextBlock Grid.Row="7" x:Name="SaveHintText" Text="设置已自动保存"
+        <TextBlock Grid.Row="8" x:Name="SaveHintText" Text="设置已自动保存"
                    Style="{StaticResource CaptionTextBlockStyle}"
                    Foreground="{ThemeResource SystemFillColorSuccessBrush}"
                    Opacity="0"/>

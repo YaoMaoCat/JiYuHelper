@@ -33,6 +33,9 @@ public class TeacherDiscoverer : IDisposable
 
     public ObservableCollection<TeacherInfo> Teachers { get; } = new();
 
+    /// <summary>组播监听端口 (0 = 使用默认 4988, 由设置注入)</summary>
+    public int MulticastPort { get; set; }
+
     /// <summary>UI 线程调度器, 用于跨线程安全更新集合</summary>
     public DispatcherQueue? UiDispatcher { get; set; }
 
@@ -74,8 +77,9 @@ public class TeacherDiscoverer : IDisposable
 
     private async Task RunMulticastAsync(int timeoutSeconds, CancellationToken ct)
     {
+        int port = MulticastPort > 0 ? MulticastPort : PacketBuilder.MulticastPort;
         SetProgress("正在绑定组播端口 ...");
-        Logger.Info($"监听组播 {PacketBuilder.MulticastGroup}:{PacketBuilder.MulticastPort} ...");
+        Logger.Info($"监听组播 {PacketBuilder.MulticastGroup}:{port} ...");
 
         Socket? sock = null;
         try
@@ -85,7 +89,7 @@ public class TeacherDiscoverer : IDisposable
             // - 无需管理员权限 (组播接收不需要特权)
             sock = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             sock.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            sock.Bind(new IPEndPoint(IPAddress.Any, PacketBuilder.MulticastPort));
+            sock.Bind(new IPEndPoint(IPAddress.Any, port));
             sock.ReceiveTimeout = 500;
 
             // 在每个 IPv4 网卡上加入组播组 (防止多网卡绑错接口)

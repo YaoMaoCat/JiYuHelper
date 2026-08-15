@@ -108,6 +108,15 @@ public class AppSettings
     /// <summary>界面模式 (新手/开发者), 空表示尚未选择 (首次启动引导)</summary>
     public string UiMode { get; set; } = "";
 
+    /// <summary>组播公告监听端口 (0 = 默认 4988; 不同版本极域可能用 4705 等)</summary>
+    public int MulticastPort { get; set; }
+
+    /// <summary>教师端 TCP 控制端口 (0 = 默认 4806)</summary>
+    public int ControlPort { get; set; }
+
+    /// <summary>会话通道 UDP 端口 (0 = 默认 5512)</summary>
+    public int SessionPort { get; set; }
+
     /// <summary>是否已接受启动免责声明 (接受后不再弹出)</summary>
     public bool DisclaimerAccepted { get; set; }
 

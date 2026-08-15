@@ -90,6 +90,8 @@ public sealed partial class AttackPage : Page
         }
 
         _duration = DurationBox.Value;
+        // 控制端口来自设置 (0=默认 4806)
+        _engine.Port = SettingsStore.Load().ControlPort;
         _engine.Start(ip, GetSelectedMode(), (int)ThreadCountBox.Value, (int)_duration);
 
         StartButton.IsEnabled = false;

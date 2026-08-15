@@ -25,6 +25,7 @@ public sealed partial class SettingsPage : Page
     private bool _suppressSelectionEvent;
     private bool _suppressScreenToggle;
     private bool _suppressModeRadio;
+    private bool _suppressPortChanged;
     private string _dllDir = "";
     private DateTime _lastScreenPngWrite = DateTime.MinValue;
     private long _lastScreenPngSize = -1;
@@ -46,6 +47,13 @@ public sealed partial class SettingsPage : Page
         _dllDir = AppContext.BaseDirectory;
 
         TitleBox.Text = _settings.WindowTitle;
+
+        // 端口设置: 初始化 (0 = 默认)
+        _suppressPortChanged = true;
+        MulticastPortBox.Value = _settings.MulticastPort;
+        ControlPortBox.Value = _settings.ControlPort;
+        SessionPortBox.Value = _settings.SessionPort;
+        _suppressPortChanged = false;
 
         // 界面模式: 同步单选状态 (构造期赋值会触发 Checked, 用标志抑制)
         _suppressModeRadio = true;
@@ -354,6 +362,36 @@ public sealed partial class SettingsPage : Page
         _owner.ApplyUiMode(mode);
         Logger.Info($"界面模式: {(mode == UiModeOption.Novice ? "新手" : "开发者")}");
         ShowSaveHint(mode == UiModeOption.Novice ? "已切换到新手模式" : "已切换到开发者模式");
+    }
+
+    // ---------- 端口设置 ----------
+
+    private void OnPortChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
+    {
+        if (_suppressPortChanged) return;
+
+        _settings.MulticastPort = (int)MulticastPortBox.Value;
+        _settings.ControlPort = (int)ControlPortBox.Value;
+        _settings.SessionPort = (int)SessionPortBox.Value;
+        SettingsStore.Save(_settings);
+        Logger.Info($"端口设置已更新: 组播={_settings.MulticastPort} 控制={_settings.ControlPort} 会话={_settings.SessionPort} (0=默认)");
+        ShowSaveHint("端口设置已保存");
+    }
+
+    private void OnResetPortsClick(object sender, RoutedEventArgs e)
+    {
+        _suppressPortChanged = true;
+        MulticastPortBox.Value = 0;
+        ControlPortBox.Value = 0;
+        SessionPortBox.Value = 0;
+        _suppressPortChanged = false;
+
+        _settings.MulticastPort = 0;
+        _settings.ControlPort = 0;
+        _settings.SessionPort = 0;
+        SettingsStore.Save(_settings);
+        Logger.Info("端口设置已恢复默认");
+        ShowSaveHint("已恢复默认端口");
     }
 
     // ---------- 假屏图管理 ----------
