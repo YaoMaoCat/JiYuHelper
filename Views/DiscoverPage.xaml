@@ -70,7 +70,7 @@
                         <FontIcon Glyph="&#xE725;" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
                         <TextBlock Grid.Column="1" Text="{Binding Display}" VerticalAlignment="Center"/>
                         <TextBlock Grid.Column="2" Text="{Binding DiscoveredAt}" Style="{StaticResource CaptionTextBlockStyle}"
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" Tag="tech"/>
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>

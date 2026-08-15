@@ -123,23 +123,23 @@
                     <StackPanel Grid.Column="0" Spacing="2" MinWidth="90">
                         <TextBlock x:Name="StatPackets" Text="0" Style="{StaticResource BodyStrongTextBlockStyle}"/>
                         <TextBlock Text="已发包数" Style="{StaticResource CaptionTextBlockStyle}"
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" Tag="tech"/>
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     </StackPanel>
                     <StackPanel Grid.Column="1" Spacing="2" MinWidth="90">
                         <TextBlock x:Name="StatBytes" Text="0 B" Style="{StaticResource BodyStrongTextBlockStyle}"/>
                         <TextBlock Text="已发字节" Style="{StaticResource CaptionTextBlockStyle}"
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" Tag="tech"/>
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     </StackPanel>
                     <StackPanel Grid.Column="2" Spacing="2" MinWidth="90">
                         <TextBlock x:Name="StatCrashes" Text="0" Style="{StaticResource BodyStrongTextBlockStyle}"
                                    Foreground="{ThemeResource SystemFillColorSuccessBrush}"/>
                         <TextBlock Text="崩溃信号" Style="{StaticResource CaptionTextBlockStyle}"
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" Tag="tech"/>
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     </StackPanel>
                     <StackPanel Grid.Column="3" Spacing="2" MinWidth="90">
                         <TextBlock x:Name="StatThreads" Text="0" Style="{StaticResource BodyStrongTextBlockStyle}"/>
                         <TextBlock Text="活动线程" Style="{StaticResource CaptionTextBlockStyle}"
-                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" Tag="tech"/>
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                     </StackPanel>
                 </Grid>
 
