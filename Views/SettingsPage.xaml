@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="JiYuHelper.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:JiYuHelper.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Padding="24" RowSpacing="16" MinWidth="760">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="8">
+            <TextBlock Text="设置" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="个性化窗口与主题" Style="{StaticResource CaptionTextBlockStyle}"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+        </StackPanel>
+
+        <!-- 窗口标题 -->
+        <Border Grid.Row="1" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="8" Padding="16">
+            <StackPanel Spacing="12">
+                <TextBlock Text="窗口标题" Style="{StaticResource SubtitleTextBlockStyle}"/>
+
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <TextBox x:Name="TitleBox" Width="260" PlaceholderText="输入窗口标题"/>
+                    <Button Click="OnApplyTitleClick">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE73E;" FontSize="14"/>
+                            <TextBlock Text="应用"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Click="OnResetTitleClick">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE777;" FontSize="14"/>
+                            <TextBlock Text="恢复默认"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- 界面模式 -->
+        <Border Grid.Row="2" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="8" Padding="16">
+            <StackPanel Spacing="12">
+                <TextBlock Text="界面模式" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock Text="新手模式隐藏技术细节说明, 界面更简洁; 开发者模式显示全部内容"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                <StackPanel Orientation="Horizontal" Spacing="24">
+                    <RadioButton x:Name="ModeNoviceRadio" GroupName="UiModeGroup" Content="新手模式"
+                                 Checked="OnUiModeRadioChecked"/>
+                    <RadioButton x:Name="ModeDeveloperRadio" GroupName="UiModeGroup" Content="开发者模式"
+                                 Checked="OnUiModeRadioChecked"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- 主题 -->
+        <Border Grid.Row="3" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="8" Padding="16">
+            <StackPanel Spacing="12">
+                <TextBlock Text="主题" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock Text="个性化配色：蓝色强调色 / 明亮 / 深色" Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                <GridView x:Name="ThemeGrid" SelectionMode="Single" IsItemClickEnabled="False"
+                          Padding="3,0,0,0"
+                          SelectionChanged="OnThemeSelectionChanged" Loaded="OnThemeGridLoaded">
+                    <GridView.ItemContainerStyle>
+                        <Style TargetType="GridViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Margin" Value="-3,0,11,8"/>
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="BorderThickness" Value="3"/>
+                            <Setter Property="BorderBrush" Value="Transparent"/>
+                            <Setter Property="CornerRadius" Value="10"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="GridViewItem">
+                                        <Grid>
+                                            <Border x:Name="OutlineBorder"
+                                                    BorderThickness="3"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    CornerRadius="10"
+                                                    Padding="0">
+                                                <ContentPresenter/>
+                                            </Border>
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GridView.ItemContainerStyle>
+                    <GridView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </GridView.ItemsPanel>
+                    <GridView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Width="150" Spacing="8">
+                                <Border Width="150" Height="80" CornerRadius="8">
+                                    <Border.Background>
+                                        <SolidColorBrush Color="{Binding PreviewBg}"/>
+                                    </Border.Background>
+                                    <StackPanel Orientation="Vertical" Spacing="8" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <Rectangle Width="80" Height="10" RadiusX="5" RadiusY="5">
+                                            <Rectangle.Fill>
+                                                <SolidColorBrush Color="{Binding PreviewAccent}"/>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                        <Rectangle Width="50" Height="10" RadiusX="5" RadiusY="5" Opacity="0.35">
+                                            <Rectangle.Fill>
+                                                <SolidColorBrush Color="{Binding PreviewBg}"/>
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </StackPanel>
+                                </Border>
+                                <TextBlock Text="{Binding Name}" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+            </StackPanel>
+        </Border>
+
+        <!-- 配置导入/导出 -->
+        <Border Grid.Row="4" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="8" Padding="16">
+            <StackPanel Spacing="12">
+                <TextBlock Text="配置导入 / 导出" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock Text="导出当前设置（窗口标题、主题、Hook 功能开关）为 JSON 文件，或从 JSON 文件恢复"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button Click="OnExportConfigClick">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE74E;" FontSize="14"/>
+                            <TextBlock Text="导出配置"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Click="OnImportConfigClick">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE8B5;" FontSize="14"/>
+                            <TextBlock Text="导入配置"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- 假屏图 -->
+        <Border Grid.Row="5" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="8" Padding="16">
+            <StackPanel Spacing="12">
+                <TextBlock Text="假屏图" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock Text="替换「控制」页屏幕假屏使用的占位图 (screen.png)，上传后立即生效；开启自动监测可在外界替换文件时自动通知 DLL 重载"
+                           Style="{StaticResource CaptionTextBlockStyle}"
+                           Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
+
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button Click="OnUploadScreenClick">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE8B5;" FontSize="14"/>
+                            <TextBlock Text="上传假屏图"/>
+                        </StackPanel>
+                    </Button>
+                    <ToggleSwitch x:Name="AutoReloadScreenSwitch" Header="自动监测替换"
+                                  Toggled="OnAutoReloadScreenToggled"
+                                  OffContent="关" OnContent="开"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- 设置说明 -->
+        <Border Grid.Row="6" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="8" Padding="16">
+            <StackPanel Spacing="8">
+                <TextBlock Text="说明" Style="{StaticResource SubtitleTextBlockStyle}"/>
+                <TextBlock Text="所有设置自动保存, 下次启动时恢复"
+                           Style="{StaticResource BodyTextBlockStyle}"/>
+            </StackPanel>
+        </Border>
+
+        <TextBlock Grid.Row="7" x:Name="SaveHintText" Text="设置已自动保存"
+                   Style="{StaticResource CaptionTextBlockStyle}"
+                   Foreground="{ThemeResource SystemFillColorSuccessBrush}"
+                   Opacity="0"/>
+        </Grid>
+    </ScrollViewer>
+</Page>

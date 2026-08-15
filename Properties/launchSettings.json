@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "JiYuHelper (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "JiYuHelper (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+# ---- 构建产物 ----
+bin/
+obj/
+Native/out/
+
+# ---- IDE / 用户特定文件 ----
+.vs/
+*.user
+
+# ---- 归档 (源码已解压到 Native/, 压缩包不入库) ----
+*.zip
+
+# ---- Native: 非源码文件 ----
+# 运行时占位图 (假屏图)
+/Native/screen.png
+# 机器特定的构建脚本 (引用本机 vcvars 路径)
+/Native/build-x86-release.bat
+# MinHook 预编译静态库 (由用户按 CMakeLists 说明放置)
+/Native/thirdparty/MinHook/lib/
+# MinHook 完整源码克隆 (构建仅依赖 include 头文件, 参考源码不入库)
+/Native/thirdparty/MinHook-src/
+
+# ---- 系统文件 ----
+Thumbs.db
+Desktop.ini

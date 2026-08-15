@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="JiYuHelper.Views.DiscoverPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:JiYuHelper.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Padding="24" RowSpacing="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="8">
+            <TextBlock Text="教师机发现" Style="{StaticResource TitleTextBlockStyle}"/>
+            <TextBlock Text="方式一: UDP 组播监听 (OONC/CANC)；方式二: 网段 IP 扫描 (TCP 4806 + WORB 握手验证)"
+                       Style="{StaticResource CaptionTextBlockStyle}"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" Tag="tech"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Spacing="8">
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button x:Name="ScanButton" Click="OnScanClick" Style="{StaticResource AccentButtonStyle}">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE721;" FontSize="14"/>
+                        <TextBlock Text="扫描教师机"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="StopScanButton" Click="OnStopScanClick" IsEnabled="False">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE71A;" FontSize="14"/>
+                        <TextBlock Text="停止扫描"/>
+                    </StackPanel>
+                </Button>
+                <TextBox x:Name="ManualIpBox" PlaceholderText="手动添加教师 IP" Width="200"
+                         KeyDown="OnManualIpKeyDown"/>
+                <Button x:Name="AddButton" Click="OnAddClick">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE710;" FontSize="14"/>
+                        <TextBlock Text="添加"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="24">
+                <RadioButton x:Name="ModeMulticast" GroupName="ScanMode" Content="组播扫描 (224.50.50.42:4988)"
+                             Checked="OnModeChanged"/>
+                <RadioButton x:Name="ModeSubnet" GroupName="ScanMode" Content="网段 IP 扫描 (TCP 4806)" IsChecked="True"
+                             Checked="OnModeChanged"/>
+            </StackPanel>
+        </StackPanel>
+
+        <ListView Grid.Row="2"
+                  x:Name="TeacherList"
+                  SelectionMode="Single"
+                  ItemsSource="{x:Bind Discoverer.Teachers, Mode=OneWay}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="4" ColumnSpacing="12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <FontIcon Glyph="&#xE725;" Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Display}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="2" Text="{Binding DiscoveredAt}" Style="{StaticResource CaptionTextBlockStyle}"
+                                   Foreground="{ThemeResource TextFillColorSecondaryBrush}" Tag="tech"/>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Border Grid.Row="3" Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                CornerRadius="8" Padding="12,8">
+            <TextBlock x:Name="StatusText" Text="就绪"
+                       Style="{StaticResource CaptionTextBlockStyle}"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
+        </Border>
+    </Grid>
+</Page>
