@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.20)
 # CMake writes the localized prefix to rules.ninja in GBK while ninja reads it
 # as UTF-8, so the match fails and "note: including file: ..." lines leak into
 # the build log. Use CMake's source-based scanning (#include directives) instead.
-# Trade-off: after editing a .hpp you may need "Rebuild All" rather than incremental.
+# Trade-off: after editing a header you may need "Rebuild All" rather than incremental.
 set(CMAKE_DEPENDS_USE_COMPILER OFF)
 
 project(JiYuHook LANGUAGES CXX)
@@ -23,11 +23,9 @@ add_compile_options(/utf-8)
 
 # ============================================================================
 # Architecture split (real-world JiYu install: StudentMain 32-bit,
-# MasterHelper 64-bit):
-#   x86 build  -> bypass_main.dll  (injected into StudentMain.exe)
-#              + inject32.exe      (32-bit injector helper)
-#   x64 build  -> bypass_master.dll (injected into MasterHelper.exe)
-#              + inject64.exe      (64-bit injector helper)
+# MasterHelper 32-bit on JiYu v6.0; x64 branch kept for completeness):
+#   x86 build  -> jyhelper_main.dll   (injected into StudentMain.exe)
+#   x64 build  -> jyhelper_master.dll (injected into MasterHelper.exe)
 # ============================================================================
 
 # ---- MinHook ----
@@ -48,75 +46,54 @@ target_include_directories(MinHook INTERFACE
 )
 set(MINHOOK_TARGET MinHook)
 
-# ---- bypass_main.dll (StudentMain.exe) + bypass_master.dll (MasterHelper.exe) ----
-# JiYu v6.0 is 32-bit ONLY (both processes). Both DLLs are built as x86.
+# ---- jyhelper_main.dll (StudentMain.exe) ----
+# All source lives under src/: common/ (shared layers), hooks/ (feature
+# modules by domain), main/ (entry). JiYu v6.0 is 32-bit ONLY.
 if(CMAKE_SIZEOF_VOID_P EQUAL 4)
     add_library(bypass_main SHARED
-        src/dllmain.cpp
-        src/core/log.cpp
-        src/core/pe.cpp
-        src/core/pipe.cpp
-        src/core/hotupdate.cpp
-        src/core/netfilter.cpp
-        src/hook/engine.cpp
-        src/hook/keyboard.cpp
-        src/hook/topmost.cpp
-        src/hook/applist.cpp
-        src/hook/proclist.cpp
-        src/hook/screen.cpp
-        src/hook/remote.cpp
-        src/hook/screencap.cpp
-        src/hook/tdmaster.cpp
-        src/hook/focuslock.cpp
-        src/hook/procguard.cpp
-        src/hook/filterguard.cpp
-        src/hook/netfilterguard.cpp
-        src/window/subclass.cpp
-        src/monitor/monitor.cpp
-        config/config.cpp
+        src/main/dllmain.cpp
+        src/common/log/log.cpp
+        src/common/pipe/pipe.cpp
+        src/common/hook/hook.cpp
+        src/common/config/config.cpp
+        src/common/util/pe.cpp
+        src/hooks/input/keyboard.cpp
+        src/hooks/input/remote_input.cpp
+        src/hooks/window/topmost.cpp
+        src/hooks/window/focuslock.cpp
+        src/hooks/window/subclass.cpp
+        src/hooks/visibility/applist.cpp
+        src/hooks/visibility/proclist.cpp
+        src/hooks/screen/screen_fake.cpp
+        src/hooks/screen/screencap.cpp
+        src/hooks/screen/blackmonitor.cpp
+        src/hooks/proc/procguard.cpp
+        src/hooks/device/filterguard.cpp
+        src/hooks/network/netsim_guard.cpp
+        src/hooks/td/tdmaster.cpp
     )
 
     target_link_libraries(bypass_main PRIVATE ${MINHOOK_TARGET} user32 gdiplus psapi)
-    target_include_directories(bypass_main PRIVATE ${CMAKE_SOURCE_DIR})
     set_target_properties(bypass_main PROPERTIES OUTPUT_NAME jyhelper_main)
-
-    add_library(bypass_master SHARED
-        src/master_hook/dllmain.cpp
-        src/master_hook/guard.cpp
-        src/master_hook/log.cpp
-        src/hook/engine.cpp
-        src/core/pe.cpp
-        src/core/pipe.cpp
-        src/core/netfilter.cpp
-        config/config.cpp
-    )
-
-    target_link_libraries(bypass_master PRIVATE ${MINHOOK_TARGET} user32)
-    target_include_directories(bypass_master PRIVATE ${CMAKE_SOURCE_DIR})
-    set_target_properties(bypass_master PROPERTIES OUTPUT_NAME jyhelper_master)
 endif()
 
-# ---- bypass_master.dll (MasterHelper.exe, 64-bit only) ----
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    add_library(bypass_master SHARED
-        src/master_hook/dllmain.cpp
-        src/master_hook/guard.cpp
-        src/master_hook/log.cpp
-        src/hook/engine.cpp
-        src/core/pe.cpp
-        src/core/pipe.cpp
-        src/core/netfilter.cpp
-        config/config.cpp
-    )
+# ---- jyhelper_master.dll (MasterHelper.exe) ----
+add_library(bypass_master SHARED
+    src/main/dllmaster.cpp
+    src/master/guard.cpp
+    src/common/log/log.cpp
+    src/common/pipe/pipe.cpp
+    src/common/hook/hook.cpp
+    src/common/config/config.cpp
+    src/common/util/pe.cpp
+    src/common/util/netfilter.cpp
+)
 
-    target_link_libraries(bypass_master PRIVATE ${MINHOOK_TARGET} user32)
-    target_include_directories(bypass_master PRIVATE ${CMAKE_SOURCE_DIR})
-    set_target_properties(bypass_master PROPERTIES OUTPUT_NAME jyhelper_master)
-endif()
+target_link_libraries(bypass_master PRIVATE ${MINHOOK_TARGET} user32)
+set_target_properties(bypass_master PROPERTIES OUTPUT_NAME jyhelper_master)
 
 # ---- injector helper: REMOVED ----
 # Injection is now done entirely from the x64 JiYuHelper app:
 #   64-bit targets -> standard CreateRemoteThread
 #   32-bit targets -> wow64 NtCreateThreadEx + 32-bit kernel32!LoadLibraryW
 # (see JiYuHelper Core/ProcessManager.cs)
-
