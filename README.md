@@ -116,4 +116,6 @@ cmake --build out/build/x86-release
 
 ## 许可 / License
 
-本项目仅用于安全研究，未附带开源许可证（All rights reserved）。
+[MIT License](LICENSE) © 2026 YaoMaoCat
+
+> 本项目为安全研究而编写；使用者须遵守当地法律法规，并仅在被授权的环境中使用。
