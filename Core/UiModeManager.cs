@@ -63,25 +63,61 @@ public static class UiModeManager
         }
     }
 
-    /// <summary>名称替换: 新手模式把技术名词换成通俗名, 开发者模式恢复原名 (原名缓存于首次切换)</summary>
+    /// <summary>名称替换: 新手模式把技术名词换成通俗名, 开发者模式恢复原名 (原名缓存于首次切换)。
+    /// 支持 TextBlock.Text / ToggleSwitch.Header / RadioButton.Content (字符串内容)。</summary>
     private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<FrameworkElement, string>
         OriginalNames = new();
 
     private static void ApplyNoviceName(FrameworkElement el, string key, bool novice)
     {
-        if (el is not TextBlock tb) return;
+        if (!TryGetDisplayString(el, out var current)) return;
 
         if (novice)
         {
-            if (!OriginalNames.TryGetValue(tb, out _))
-                OriginalNames.Add(tb, tb.Text);
+            if (!OriginalNames.TryGetValue(el, out _))
+                OriginalNames.Add(el, current);
             if (NoviceNames.TryGetValue(key, out var simple))
-                tb.Text = simple;
+                SetDisplayString(el, simple);
         }
         else
         {
-            if (OriginalNames.TryGetValue(tb, out var original))
-                tb.Text = original;
+            if (OriginalNames.TryGetValue(el, out var original))
+                SetDisplayString(el, original);
+        }
+    }
+
+    private static bool TryGetDisplayString(FrameworkElement el, out string value)
+    {
+        switch (el)
+        {
+            case TextBlock tb:
+                value = tb.Text;
+                return true;
+            case ToggleSwitch ts when ts.Header is string s:
+                value = s;
+                return true;
+            case RadioButton rb when rb.Content is string s:
+                value = s;
+                return true;
+            default:
+                value = "";
+                return false;
+        }
+    }
+
+    private static void SetDisplayString(FrameworkElement el, string text)
+    {
+        switch (el)
+        {
+            case TextBlock tb:
+                tb.Text = text;
+                break;
+            case ToggleSwitch ts:
+                ts.Header = text;
+                break;
+            case RadioButton rb:
+                rb.Content = text;
+                break;
         }
     }
 
@@ -90,27 +126,40 @@ public static class UiModeManager
     {
         // 控制页: 远程控制拦截
         ["remote-input"] = "禁止教师输入",
-        ["input-lock"] = "允许本地输入",
+        ["input-lock"] = "教室端无法锁定你的输入",
         ["proc-guard"] = "保护本机进程",
         ["proc-hook-guard"] = "禁止结束本机程序",
         ["filter-guard"] = "禁用 USB/光驱放行",
-        ["net-sim"] = "禁止断网指令",
+        ["net-sim"] = "教师端无法禁用你的网络",
         // 控制页: 界面与进程
         ["topmost-strip"] = "去掉窗口置顶",
         ["focus-lock"] = "禁止抢焦点",
         ["app-list"] = "隐藏本机程序列表",
         ["proc-list"] = "隐藏本机进程列表",
         // 控制页: 屏幕监控
-        ["screen-fake"] = "伪造屏幕画面",
-        ["screen-cap"] = "禁止被截屏",
+        ["screen-fake"] = "教师端看你的屏幕看到的是假画面（需要在设置中上传假屏图）",
+        ["screen-cap"] = "教师端截取或者录制你的屏幕是假画面",
         ["black-monitor"] = "自动退出黑屏",
         // 控制页: 输入
         ["keyboard-bypass"] = "禁止记录键盘",
+        // 控制页: 进程状态行
+        ["proc-main"] = "StudentMain.exe（极域主进程）",
+        ["proc-master"] = "MasterHelper.exe（极域功能进程）",
+        // 控制页: 注入按钮
+        ["btn-inject"] = "开始控制极域",
+        ["btn-uninject"] = "停止",
+        ["auto-reinject"] = "控制失败时自动重新控制",
         // 分组标题
         ["group-remote"] = "防止教师远程控制",
         ["group-ui"] = "窗口与列表隐藏",
         ["group-screen"] = "屏幕保护",
         ["group-input"] = "输入保护",
+        // 扫描页: 扫描方式
+        ["scan-multicast"] = "方式一：组播自动发现",
+        ["scan-subnet"] = "方式二：扫描整个网段",
+        // 设置页: 配置导入导出 / 假屏图
+        ["export-desc"] = "导出当前设置为 JSON 文件，或从 JSON 文件恢复",
+        ["screen-desc"] = "上传一张图片，「控制」页开启「伪造屏幕」后，教师端看到你的屏幕就是这张图",
     };
 
     /// <summary>深度优先遍历视觉树的子元素 (需在页面 Loaded 后调用)</summary>

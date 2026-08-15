@@ -72,6 +72,9 @@ public sealed partial class SettingsPage : Page
             () => ProcessManager.FindProcesses(ProcessManager.StudentMainExe).Any(p => p.IsInjected));
         _reloadClient.Start();
 
+        // 界面模式: 新手模式隐藏自动监测等元素 (Loaded 时视觉树已连接)
+        UiModeManager.Attach(this);
+
         // 假屏图自动监测轮询 (2s), 页面常驻于缓存, 不随切页停止
         _screenTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2) };
         _screenTimer.Tick += (_, _) => CheckScreenPngChanged();

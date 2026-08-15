@@ -146,6 +146,7 @@
             <StackPanel Spacing="12">
                 <TextBlock Text="配置导入 / 导出" Style="{StaticResource SubtitleTextBlockStyle}"/>
                 <TextBlock Text="导出当前设置（窗口标题、主题、Hook 功能开关）为 JSON 文件，或从 JSON 文件恢复"
+                           Tag="name-export-desc"
                            Style="{StaticResource CaptionTextBlockStyle}"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 
@@ -172,6 +173,7 @@
             <StackPanel Spacing="12">
                 <TextBlock Text="假屏图" Style="{StaticResource SubtitleTextBlockStyle}"/>
                 <TextBlock Text="替换「控制」页屏幕假屏使用的占位图 (screen.png)，上传后立即生效；开启自动监测可在外界替换文件时自动通知 DLL 重载"
+                           Tag="name-screen-desc"
                            Style="{StaticResource CaptionTextBlockStyle}"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"/>
 
@@ -182,7 +184,7 @@
                             <TextBlock Text="上传假屏图"/>
                         </StackPanel>
                     </Button>
-                    <ToggleSwitch x:Name="AutoReloadScreenSwitch" Header="自动监测替换"
+                    <ToggleSwitch x:Name="AutoReloadScreenSwitch" Header="自动监测替换" Tag="tech"
                                   Toggled="OnAutoReloadScreenToggled"
                                   OffContent="关" OnContent="开"/>
                 </StackPanel>

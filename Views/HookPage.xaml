@@ -49,7 +49,7 @@
                             <FontIcon Glyph="&#xE7F4;" FontSize="16"
                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             <StackPanel Grid.Column="1" Spacing="2">
-                                <TextBlock Text="StudentMain.exe" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                <TextBlock Text="StudentMain.exe" Style="{StaticResource BodyStrongTextBlockStyle}" Tag="name-proc-main"/>
                                 <TextBlock x:Name="StudentMainStatusText" Text="检测中..."
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
@@ -69,7 +69,7 @@
                             <FontIcon Glyph="&#xE713;" FontSize="16"
                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             <StackPanel Grid.Column="1" Spacing="2">
-                                <TextBlock Text="MasterHelper.exe (SYSTEM)" Style="{StaticResource BodyStrongTextBlockStyle}"/>
+                                <TextBlock Text="MasterHelper.exe (SYSTEM)" Style="{StaticResource BodyStrongTextBlockStyle}" Tag="name-proc-master"/>
                                 <TextBlock x:Name="MasterHelperStatusText" Text="检测中..."
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
@@ -91,16 +91,16 @@
                             <Button x:Name="InjectButton" Style="{StaticResource AccentButtonStyle}" Click="OnInjectClick">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon Glyph="&#xE76C;" FontSize="14"/>
-                                    <TextBlock Text="注入并启用"/>
+                                    <TextBlock Text="注入并启用" Tag="name-btn-inject"/>
                                 </StackPanel>
                             </Button>
                             <Button x:Name="UninjectButton" Click="OnUninjectClick" IsEnabled="False">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <FontIcon Glyph="&#xE71A;" FontSize="14"/>
-                                    <TextBlock Text="卸载"/>
+                                    <TextBlock Text="卸载" Tag="name-btn-uninject"/>
                                 </StackPanel>
                             </Button>
-                            <ToggleSwitch x:Name="AutoReinjectSwitch" Header="自动重注入"
+                            <ToggleSwitch x:Name="AutoReinjectSwitch" Header="自动重注入" Tag="name-auto-reinject"
                                           Toggled="OnAutoReinjectToggled"
                                           OffContent="关" OnContent="开"/>
                         </StackPanel>

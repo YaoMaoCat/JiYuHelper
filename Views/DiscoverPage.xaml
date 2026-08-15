@@ -49,9 +49,9 @@
 
             <StackPanel Orientation="Horizontal" Spacing="24">
                 <RadioButton x:Name="ModeMulticast" GroupName="ScanMode" Content="组播扫描 (224.50.50.42:4988)"
-                             Checked="OnModeChanged"/>
+                             Tag="name-scan-multicast" Checked="OnModeChanged"/>
                 <RadioButton x:Name="ModeSubnet" GroupName="ScanMode" Content="网段 IP 扫描 (TCP 4806)" IsChecked="True"
-                             Checked="OnModeChanged"/>
+                             Tag="name-scan-subnet" Checked="OnModeChanged"/>
             </StackPanel>
         </StackPanel>
 
