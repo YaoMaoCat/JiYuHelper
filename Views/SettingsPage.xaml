@@ -196,7 +196,7 @@
                 CornerRadius="8" Padding="16">
             <StackPanel Spacing="12">
                 <TextBlock Text="端口设置" Style="{StaticResource SubtitleTextBlockStyle}"/>
-                <TextBlock Text="不同版本极域的端口可能不同 (如组播公告 4988/4705), 留 0 使用默认值"
+                <TextBlock Text="不同版本极域的端口可能不同 (如组播公告 4988/4705)；显示的是当前生效端口，「恢复默认」回到本版本默认值"
                            Style="{StaticResource CaptionTextBlockStyle}"
                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
 

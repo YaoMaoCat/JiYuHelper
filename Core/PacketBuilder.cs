@@ -12,6 +12,7 @@ public static class PacketBuilder
 {
     public const ushort ControlPort = 4806;
     public const ushort MulticastPort = 4988;
+    public const ushort SessionPort = 5512; // BaseTrans 通信层 UDP 端口
     public const string MulticastGroup = "224.50.50.42";
 
     // ---------- 常量头 ----------

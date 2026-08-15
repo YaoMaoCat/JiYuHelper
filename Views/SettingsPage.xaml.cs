@@ -48,11 +48,11 @@ public sealed partial class SettingsPage : Page
 
         TitleBox.Text = _settings.WindowTitle;
 
-        // 端口设置: 初始化 (0 = 默认)
+        // 端口设置: 初始化 (存储 0 = 使用默认, 显示层换算为实际生效端口)
         _suppressPortChanged = true;
-        MulticastPortBox.Value = _settings.MulticastPort;
-        ControlPortBox.Value = _settings.ControlPort;
-        SessionPortBox.Value = _settings.SessionPort;
+        MulticastPortBox.Value = _settings.MulticastPort > 0 ? _settings.MulticastPort : PacketBuilder.MulticastPort;
+        ControlPortBox.Value = _settings.ControlPort > 0 ? _settings.ControlPort : PacketBuilder.ControlPort;
+        SessionPortBox.Value = _settings.SessionPort > 0 ? _settings.SessionPort : PacketBuilder.SessionPort;
         _suppressPortChanged = false;
 
         // 界面模式: 同步单选状态 (构造期赋值会触发 Checked, 用标志抑制)
@@ -372,6 +372,7 @@ public sealed partial class SettingsPage : Page
     private void OnPortChanged(NumberBox sender, NumberBoxValueChangedEventArgs args)
     {
         if (_suppressPortChanged) return;
+        if (double.IsNaN(sender.Value)) return;
 
         _settings.MulticastPort = (int)MulticastPortBox.Value;
         _settings.ControlPort = (int)ControlPortBox.Value;
@@ -379,14 +380,22 @@ public sealed partial class SettingsPage : Page
         SettingsStore.Save(_settings);
         Logger.Info($"端口设置已更新: 组播={_settings.MulticastPort} 控制={_settings.ControlPort} 会话={_settings.SessionPort} (0=默认)");
         ShowSaveHint("端口设置已保存");
+
+        // 输入 0 表示"使用默认": 立即把框内显示换算为实际默认端口
+        _suppressPortChanged = true;
+        if ((int)MulticastPortBox.Value == 0) MulticastPortBox.Value = PacketBuilder.MulticastPort;
+        if ((int)ControlPortBox.Value == 0) ControlPortBox.Value = PacketBuilder.ControlPort;
+        if ((int)SessionPortBox.Value == 0) SessionPortBox.Value = PacketBuilder.SessionPort;
+        _suppressPortChanged = false;
     }
 
     private void OnResetPortsClick(object sender, RoutedEventArgs e)
     {
+        // 存储恢复 0 (= 使用默认), 框内显示当前版本的默认端口
         _suppressPortChanged = true;
-        MulticastPortBox.Value = 0;
-        ControlPortBox.Value = 0;
-        SessionPortBox.Value = 0;
+        MulticastPortBox.Value = PacketBuilder.MulticastPort;
+        ControlPortBox.Value = PacketBuilder.ControlPort;
+        SessionPortBox.Value = PacketBuilder.SessionPort;
         _suppressPortChanged = false;
 
         _settings.MulticastPort = 0;
