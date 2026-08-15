@@ -20,9 +20,6 @@ Native/out/
 # MinHook 完整源码克隆 (构建仅依赖 include 头文件, 参考源码不入库)
 /Native/thirdparty/MinHook-src/
 
-# ---- Native 重写前的备份 ----
-/Native_backup_20260815/
-
 # ---- 系统文件 ----
 Thumbs.db
 Desktop.ini
