@@ -293,7 +293,7 @@
                                       Foreground="{ThemeResource TextFillColorSecondaryBrush}"/>
                             <StackPanel Grid.Column="1" Spacing="2">
                                 <TextBlock Text="焦点锁定拦截" Style="{StaticResource BodyStrongTextBlockStyle}" Tag="name-focus-lock"/>
-                                <TextBlock Text="黑屏/控制窗口无法抢焦点 (SetForegroundWindow 等"
+                                <TextBlock Text="黑屏/控制窗口无法抢焦点 (SetForegroundWindow 等)"
                                            Style="{StaticResource CaptionTextBlockStyle}"
                                            Foreground="{ThemeResource TextFillColorSecondaryBrush}" Tag="tech"/>
 			<TextBlock Text="控制窗口无法强制跳到最前面" Style="{StaticResource CaptionTextBlockStyle}"
